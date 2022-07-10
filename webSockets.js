@@ -1,14 +1,19 @@
-const ws = require('ws')
 
-const wss = new ws.Server({
-    port: 5000
-}, () => { console.log('server started on port 5000'); })
+const PORT = process.env.PORT || 3000;
+const INDEX = '../client/public/index.html'
+
+const server = require('express')()
+    .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
+    .listen(PORT, () => console.log(`Listening on ${PORT}`));
+
+const { Server } = require('ws');
+
+const wss = new Server({ server });
 
 
 let users = []
 
 wss.on('connection', function connection(ws) {
-
     ws.on('message', function (msg) {
         msg = JSON.parse(msg)
         switch (msg.event) {
