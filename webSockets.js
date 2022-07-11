@@ -1,19 +1,17 @@
+const ws = require('ws')
 
-const PORT = process.env.PORT || 3000;
-const INDEX = '../client/public/index.html'
+const PORT = Number(process.env.PORT || 5000)
 
-const server = require('express')()
-    .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
-    .listen(PORT, () => console.log(`Listening on ${PORT}`));
+const wss = new ws.Server({ port: PORT }, () => {
+    console.log(`server started: ${PORT}`);
+})
 
-const { Server } = require('ws');
-
-const wss = new Server({ server });
-
-
+// create store for users online
 let users = []
 
+// working with connected users
 wss.on('connection', function connection(ws) {
+    console.log('client connected');
     ws.on('message', function (msg) {
         msg = JSON.parse(msg)
         switch (msg.event) {
@@ -31,13 +29,11 @@ wss.on('connection', function connection(ws) {
     })
 })
 
-
-
+// sending messages to all connected users at once
 function connectionHandler(ws, msg) {
     ws.id = msg.chatName
     broadCastMessage(ws, msg)
 }
-
 
 function broadCastMessage(ws, msg) {
     wss.clients.forEach(client => {

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node webSockets.js"
+    "start": "node webSockets.js",
+    "dev": "nodemon webSockets.js"
   },
   "keywords": [],
   "author": "",
